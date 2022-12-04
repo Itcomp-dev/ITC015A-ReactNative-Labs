@@ -58,7 +58,7 @@ Currently, BookItem component return a simple Text node having the title of the 
 		const [books, setBooks] = useState(Books);
 5. Pass the missing props to the child component (`BookItem`) : `title`, `thumbnailUrl`, `shortDescription` and `authors`
 
-		<BookItem title={book.title} 
+		<BookItem key={book.id} title={book.title} 
 		          thumbnailUrl={book.thumbnailUrl}
 		          shortDescription={book.shortDescription}
 		          authors={book.authors}  />
