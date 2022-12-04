@@ -13,7 +13,7 @@ By default, react native only resolves files having the extension `.js`, to work
 	module.exports = {
 		//Add this section
 		resolver: { 
-			sourceExts: ['jsx','js', 'ts', 'tsx']  
+			sourceExts: ['jsx','js', 'ts', 'tsx', 'json']  
 		},
 		transformer: {
 			getTransformOptions: async () => ({
