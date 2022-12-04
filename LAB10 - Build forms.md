@@ -1,196 +1,255 @@
-# LAB 9: Make API Calls
-
+# LAB 10: Build forms
 
 
 
 ## Install requirements
-Run the following command to install `Axios`
+Run the following command to install `Formik` and `Yup` validators
 		
-		yarn add axios
+		yarn add formik yup
  
 
-## Configure `Environment` 
-1. Create a file `environment.js` under the root directory of the project
-2. Create a settings variable that will contain application settings for both mode `dev` and `debug`
-	
-		const settings = {
-		    dev: {
-		        //development settings here
-		    },
-		    prod: {
-		        //prod settings here
-		    }
+## Add new screen
+1. Go to `src/screens/NewBook.jsx` and create a new empty component `NewBook`
+2. Add the `NewBook` screen to the `AppNavigotor` and map it with the name: `'NewBook'`
+
+		<Stack.Navigator ...>
+	        ...
+	        <Stack.Screen name="NewBook" component={NewBook}/>
+		 </Stack.Navigator>
+
+3. Navigate to `NewBook` screen
+4. Go to `BooksList` component and add a floating action button (FAB) in this screen
+
+		<FAB
+		  style={{ position: 'absolute', right: 16, bottom: 16 }} 
+		  icon="plus"
+		  onPress={addNewBook}
+		/>
+5. The `onPress` callback should point to a function `addNewBook`, which should navigate to `NewBook` screen
+
+		const addNewBook = () => {
+	        const navigation = props.navigation
+	        navigation.navigate('NewBook')
+	    }
+
+## Build the creation form
+
+1. Go to `NewBook.jsx` and add A `Formik` element, like the following
+
+		import { Formik } from 'formik';
+
+		export const NewBook = () => {
+
+	    const initialValues = {
+	        title: '',
+	        isbn: '',
+	        thumbnailUrl: Yup.string().url(),
+	        pageCount: '',
+	        publishedDate: new Date(),
+	        shortDescription: '',
+	        longDescription: '',
+	        authors: [],
+	        categories: []
+	    }
+	    return <Formik
+		            initialValues={initialValues}
+		            onSubmit={values => console.log(values)}
+		            //the rest here 
+		    </Formik
 		}
-3. Now, export those settings from the file by checking the global variable `__DEV__` like the following:
+2. The formik content has to be a builder function that receive `handlers` and return the form (inputs), like the following
 
-		export default ENV = __DEV__ ? settings.dev : settings.prod
+		<Formik ...>
+	    {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+	        <View>
+	            <TextInput
+	                label="Title"
+	                value={values.title}
+	                mode="outlined"
+	                onChangeText={handleChange("title")}/>
+	        </View>
+	    )
+	</Formik>
+3. Add a `TextInput` for each property of the book (`title`, `isbn`, `thumbnailUrl`, `pageCount`, `publishedDate`, ...etc) **except**  `authors` and `categories`.
+4. For the publish date, we'll use a `DatePicker` to let the user choose the date and not type it manually. Run the following command to install `react-native-date-picker`
 
-	> The global variable **__DEV__** in React Native is a boolean set true when the application is running on debug mode.
+		yarn add react-native-date-picker moment
+5.  Add a control state in the component, to set date picker modal visibility
 
-4. Add the BooksAPI **base url** to environment settings
+		const [datePickerOpened, setDatePickerOpened] = useState(false)
+6. Add the `DatePicker` component under the publish date text input, after importing it
+
+	`import DatePicker from 'react-native-date-picker'`
 	
-		dev: {
-	        baseUrl: "https://books-app-rn.azurewebsites.net"
-	   },
-
-## Configure `Axios` instance
-
-1. Create a folder `datasources` inside the `src/data` folder
-2. Create an entry file `index.js` inside that folder
-3. In that file, create a http client instance like the following:
-		
-		export const HttpClient = axios.create({ baseURL: ENV.baseUrl }); 
-4. Don't forget to import `environment` variables and the `axios` package
-
-		import ENV from "../../../envrionment.";
-		import axios from "axios";
-
-## Create the datasource
-
-1. Create a folder `datasources` in `src/data` folder
-2. In the same folder `src/data/datasources` create a file `books.datasource.js` (The data source should contain a set of function that calls the API using the configured http client.)
-3. Create a function `fetchBooks` that takes 2 parameters: `skipCount` and `maxResultCount`. 
+			<DatePicker
+			    modal
+			    open={datePickerOpened}
+			    mode="date"
+			    date={values.publishedDate}
+			    onConfirm={(date) => {
+			        values.publishedDate = date
+			        setDatePickerOpened(false);
+			    }}
+			    onCancel={() => {
+			        setDatePickerOpened(false)
+			    }}
+			/>
+7. Update the publish date text input by removing `onChangeText` handler add `onPressIn` handler to open the date picker dialog when user press the publish date input
 	
-		export function fetchBooks(skipCount=0, maxResultCount=10) { 
-		    return HttpClient.get("/api/books", {
-		        params: {skipCount, maxResultCount}
-		    })
-		}
-4. Add the missing import: `import { HttpClient } from ".";`
-
-
-## Bind with Redux Store
-In the previous labs, we were fetching data (books) from a sample file `books.json` already loaded in the project, so everything was `synchronous` and we need only for a reducer that change the state by assigning a variable (`state.items = Books`)
-
-Now, we're trying to fetch the data from a remote API, so the action in this case in `asynchronous,` in this case we need to use a special function from Redux toolkit called `createAsyncThunk` that enables us to create asynchronous actions of which their result can change the state.
-
-1. Create a folder `actions` inside the `src/store` folder
-2. b. Create a file `books.actions.js` inside that folder
-3. c. Create an `asynchronous` action like the following:
-
-		export const getBooks = createAsyncThunk('[Books] getBooks', async (args, thunkApi)=>{ 
-		    let response = await fetchBooks(args.skipCount, args.maxResultCount);
-		    return response.data;
-		})
-	The first argument is a the action **type** (unique identifier of the action) and the second is an **asynchronous function** that returns a **promise**
-
-
-	> An async thunk generates promise lifecycle action types based on the action type prefix that you pass in, and returns a thunk action that will run the promise callback and dispatch the lifecycle actions based on the returned promise.
-
-4. Now, we have to handle each promise state (**pending**, **fulfilled**, **rejected**) in the books slice:
-Go to `books.slice.js` and remove the previous reducer logic for the action (`getBooks`)
-
-		const booksSlice = createSlice({
-		    //...
-		    extraReducers: builder => {
-		    },
-		    //the rest here
-		})
-
-5. Add a new property `extraReducers` to the `createSlice` parameter object:
-
-		const booksSlice = createSlice({
-		    //...
-		    extraReducers: builder => {
-		    },
-		    //the rest here
-		})
-
-	> **extraReducers** is a callback function that receives a `builder` as argument which is a mapping builder between an **action** and a **reducer logic**
-
-6. Finally, we map each each state of the async thunk (getBooks) with a logic:
-
-		const booksSlice = createSlice({
-		    //...
-		    extraReducers: builder => {
-		            builder.addCase(getBooks.pending, (state, action)=>{
-		                state.loading = true
-		            });
-		            builder.addCase(getBooks.fulfilled, (state, action)=>{
-		                let page = action.payload
-		                state.items = state.items.concat(page.items)
-		                state.totalCount = page.totalCount
-		                state.loading = false 
-		            });
-		            builder.addCase(getBooks.rejected, (state, action)=>{
-		                //TODO handle network errors 
-		                state.loading = false 
-		            });
-		    },
-		    //the rest here...
-		})
-
-
-## Update the `BooksList` component
-Since the data is now paginated, we need to update the `BooksList` component to specify the `pageIndex` and the `pageSize` that will be sent when disptaching the action (`getBooks`)
-1. Add a local state `pageIndex` using the `useState` hook, initialized with **0** (first page)
-
-		const [pageIndex, setPageIndex] = useState(0)
-2. Update the `useEffect` initializer, as the following: (load 10 items per page)
-
-		useEffect(() => {
-	        dispatch(getBooks({
-	            skipCount: pageIndex * 10,
-	            maxResultCount: 10
-	        }))
-	    }, [pageIndex])
-	
-	> By adding `pageIndex` to the second parameter of `useEffect`, we're dispatching the action _**each time**_  `pageIndex` changes value.
-
-3. Add those attributes to the `FlatList` component to update the `pageIndex` each time the use reach the end of the list:
-
-		<FlatList
-		    //...
-		    onEndReached={() => setPageIndex(pageIndex + 1)} //Callback when end reached
-		    onEndReachedThreshold={0.5} //How far from the end
+		<TextInput
+		    style={styles.input}
+		    label="Publish date"
+		    value={values.publishedDate ? values.publishedDate.toLocaleDateString('fr') : ''}
+		    mode="outlined"
+		    onPressIn={() => setDatePickerOpened(true)}
 		/>
 
-## Improve the User Experience
-If you run and test the app, everything should work properly, but the user has no feedback when the data is loading or loaded, so we'll add a spinner to our component
-1. Add a selector for the propery `lodaing` of the books slice
+8. Finally, add a submit button (`import Button from 'react-native-paper'`)
+		
+		<Button  icon="check" mode="contained" onPress={handleSubmit}>
+		  Save
+		</Button>
 
-		const selectBooksLoading = createSelector(booksState, (books) => books.loading)
-		//...
+
+## Improve the UI
+
+1. For some styling, we could add the following styles:
+
+		const styles = StyleSheet.create({
+		    formContainer: {  //For the view container 
+		        padding: 16
+		    },
+		    input: {      //For each input
+		        marginVertical: 8
+		    }
+		})
+2. Apply the previous styles to the corresponding elements: `TextInput` and the main `View`
+2. The form could get longer and exceed the screen bounds, so we have to wrap everything inside a `ScrollView` component:
+
+		 return <ScrollView>
+		  <Formik ...>
+		   //...
+		   </Formik
+		 <ScrollView>
+
+
+## Validate the form
+Now, the form has no validation, the user could type anything and still get accepted. Yup validators allow to bind the form with validators such as (number, string, email, url, dates,...)
+
+1. Import Yup: `import * as Yup from 'yup';`
+2. Create a validation scheme outside the component, like the following:
+
+		const validationScheme = Yup.object({
+		    title: Yup.string().required(),
+		    isbn: Yup.string().required(),
+		    thumbnailUrl: Yup.string().url(),
+		    pageCount: Yup.number().required(),
+		    shortDescription: Yup.string(),
+		    longDescription: Yup.string(),
+		    publishedDate: Yup.date(),
+		})
+3. Bind the validation scheme with the Formik component by adding this property:
+	
+			<Formik
+		        ...
+		        validationSchema={validationScheme}>
+		     ...
+		</Formik>
+	By doing so, `errors` value provided by `Formik` is now populated and we can check for errors
+4. Add a `HelperText` under each input to show error messaged to the user
+		
+		//Example for the title property
+		{errors.title ? <HelperText type="error"> 
+		                   Title is required // or directly {errors.title}
+		                </HelperText> 
+		              : <></>
+5. Disable the Save button when there is at least one error by adding `disabled` prop
+
+		<Button disabled={Object.values(errors) > 0}   icon="check" 
+						mode="contained" onPress={handleSubmit}>
+		    Save
+		  </Button>
+
+
+## Submitting the form
+
+
+### POST request
+1. Go to `books.datasource.js` in the folder `src/data/datasources`
+2. Add a function insertBook which makes a POST request
+
+		export function insertBook(book) { 
+		    return HttpClient.post("/api/books", book)
+		} 
+
+### Bind with the store
+1. Go to `books.actions.js` and add a create an async thunk (asynchrounous action) `addBook`
+
+		export const addBook = createAsyncThunk('[Books] addBook', async (args, thunkApi)=>{ 
+		    let response = await insertBook(args.book);
+		    return response.data;
+		})
+2. Go to `books.slice.js` and a new property to the initial state
+
+		 insertStatus: 'idle' //or 'pending', 'fulfilled', 'rejected'
+3. Add the matching cases to the `addBook` async thunk in the `extraReducers` section
+
+		builder.addCase(addBook.pending, (state, action)=>{
+		    state.insertStatus = 'pending'
+		});
+		builder.addCase(addBook.fulfilled, (state, action)=>{
+		    let book = action.payload
+		    state.items.unshift(book)
+		    state.insertStatus = 'fulfilled'
+		});
+		builder.addCase(addBook.rejected, (state, action)=>{
+		    state.insertStatus = 'rejected'
+		});
+4. Go to `books.selectors.js` and add a selector for `insertStatus`
+
+		const selectInsertStatus = createSelector(booksState, (books) => books.insertStatus)
+
 		export const BooksSelectors = {
-		    //...
-		    selectBooksLoading
+		    //the rest
+		    selectInsertStatus
 		}
 
-2. Use that selector in the `BooksList` component to know when the data is loading
+### Dispatching the action
+1. Go back to `NewBook` screen and add the dispatcher , the `insertStatus` selector in the component and a local `submitted` state initialized to false
 
-		const isLoading = useSelector(BooksSelectors.selectBooksLoading)
-3. Add an `ActiviyIndicator` node from `react-native-paper` at the top of the component when `isLoading` is set to **true**, like the following:
+		const disptach = useDispatch()
+		const insertStatus = useSelector(BooksSelectors.selectInsertStatus)
+		const [submitted, setSubmitted]  = useState(false)
 
-		return <>
-		    {isLoading ? <ActivityIndicator style={{position: 'absolute', right:0, left:0, top:16}} /> : <></>}
-		    <FlatList
-		        data={books}
-		        renderItem={renderBook}
-		        keyExtractor={item => item.id}
-		        onEndReached={() => setPageIndex(pageIndex + 1)}
-		        onEndReachedThreshold={0.5}
-		    />
-		</>
-4. Run the app and test
+2. Create a function `onSubmit` which should disptach an `addBook` action
 
-
-## Add network `interceptors`
-To intercept errors and show messages to users without repeating code for each action, we can attach to the http client instance an interceptor like the following:
-		
-		export const HttpClient = axios.create({ baseURL: ENV.baseUrl });
-
-		HttpClient.interceptors.response.use(
-		    response=>response,
-		    error=>{
-		        console.log(error)
-		        Alert.alert("An error has occured !")
-		        return Promise.reject(error)
+		const onSubmit = (values) => {
+		        disptach(addBook({
+		            book: values
+		        }))
 		    }
-		)
+		//...
+	
+		<Formik
+		   ...
+		    onSubmit={onSubmit}>
+		    //...
+		 </Formik>   
 
-Try to change the base url and provide a wrong one and test if the interceptor works.
+3. Add a loading attribute to the save button to give feedback to user
+	
+		<Button loading={insertStatus=='pending'} ...>
+		  Save
+		</Button>
 
-> This interceptor shows a simple alert, for more styled and flavored messages, see [`react-native-flash-messages`](https://www.npmjs.com/package/react-native-flash-message) **,** and follow the guide.
+4. After a successful insert operation, we should exit the new book screen and go back to the list, we can do this by using `useEffect`
 
+		useEffect(()=>{ 
+	        if (submitted && insertStatus=='fullfiled') {
+	            props.navigation.goBack() 
+	        } else if (insertStatus=='rejected') {
+	            setSubmitted(false)
+	        }
+	    }, [submitted, insertStatus])
 
-
+	If the form was **submited** and the status is **fullfiled** (succesful) return to the list component, otherwise, if it's **rejected** reset the submission to false to allow user to try to submit again.
