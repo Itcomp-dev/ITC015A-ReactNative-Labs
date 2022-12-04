@@ -33,7 +33,7 @@ with this:
 
 ## Passing Props
 1. Go to `BookItem` component and add `props` to it's parameters defintion.
-2. Replace the previously hardcoded string '**_Bookname_**' by the real book title like the following:
+2. Replace the previously hardcoded string '**_Booktitle_**' by the real book title like the following:
 	
 		export const BookItem = (props) => {
 			return <Text>{props.title}</Text>
@@ -41,7 +41,7 @@ with this:
 3. Return to the parent component `BooksList` component and bind the props of the child component (`BookItem`) to the book title 
 
 		<View>
-			{books.map(book=> <BookItem title={book} />)} 
+			{books.map(book=> <BookItem key={book} title={book} />)} 
 		</View>
 4. Run the app and test
 
