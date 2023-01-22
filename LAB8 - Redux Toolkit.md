@@ -65,6 +65,9 @@
 ## Create Selectors
 1. Create a file `books.selectors.js` inside `src/store/selectors`folder
 2. Create a slice selector function which return `books` state object
+		
+		const booksState = (state) => state.books
+		
 3. Create a value selector using the function createSelector from Redux Toolkit for books and their count:
 		
 		const selectBooksCount = createSelector(booksState, (books) => books.totalCount)
