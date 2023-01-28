@@ -16,17 +16,20 @@ Run the following command to install **i18n-js** and **react-native-localize**
 	
 		//fr.json
 		{
-		    "hello": "Bienvenue"
+		    "hello": "Bienvenue",
+		    "books": "Livres"
 		}
 		 
 		//en.json
 		{
-		    "hello": "Hello"
+		    "hello": "Hello",
+		    "books": "Books"
 		}
 		
 		//ar.json
 		{
-		    "hello": "مرحبا"
+		    "hello": "مرحبا",
+		    "books": "الكتب"
 		}
 		
 ## Configure i18n-js
@@ -34,12 +37,23 @@ Run the following command to install **i18n-js** and **react-native-localize**
 2. Create an object for translations that map each culture name with the corresponding content (from file)
 	
 		const translations = {
-		    en: () => require('./en.json'),
-		    fr: () => require('./fr.json'),
-		    ar: () => require('./ar.json')
+		    en: require('./en.json'),
+		    fr: require('./fr.json'),
+		    ar: require('./ar.json')
 		} 
-3. Add a setting **`fallbackLang`** to environment file, and set it to `**en**`
-4. Add a function `changeCulture` which can change the current application culture used by i18n-js
+3. Create an instance of I18njs  and pass the translations to the constructor
+
+		const  i18n = new  I18n(translations)
+4. Add a setting **`fallbackLang`** to environment file, and set it to `**en**`
+5. Configure the fallback behavior by adding the following options to the constructor
+		
+		const  i18n = new  I18n(translations, {
+			defaultLocale:  env.fallbackLang,
+			fallbacks:  true,
+			missingBehavior:"guess"
+		})
+
+6. Add a function `changeCulture` which can change the current application culture used by i18n-js
 
 		export function changeCulture(culture) {
 		    let lang = {languageTag: culture}
@@ -50,17 +64,15 @@ Run the following command to install **i18n-js** and **react-native-localize**
 		    i18n.translations = {[languageTag]: translations[languageTag]()}
 		    i18n.locale = languageTag; 
 		}
-5. Add the missing imports
+7. Add the missing imports
 	
 		import * as RNLocalize from 'react-native-localize'
-		import i18n from 'i18n-js'
-		import {fallbackLang} from '../../envrionment.';
+		import {i18n} from 'i18n-js'
+		import  env  from  '../../environment';
 
-6. To configure the fallback culture, add those lines to `locales/index.js`
-	
-		i18n.defaultLocale = fallbackLang;
-		i18n.fallbacks = true;
-		i18n.missingBehaviour = "guess";
+8. Export the configured instance  as the default export by adding this line
+
+		export  default  i18n
 
 ## RTL Support
 To add RTL Support, we use `I18nManager` from react-native:
@@ -97,16 +109,24 @@ We initialized the culture state with `null`, to let `changeCulture` function us
 ## Usage from components
 To translate items from UI Components we use the function **t** or **translate** from  i18n
 
-	import { t } from 'i18n-js' 
-	//or import { translate } from 'i18n-js' 
+	import  i18n  from  "../locales";
 
 And then, call this function from the component, example:
 
-	export const Login = ()=>{
-    return <View>
-        //use t(key, options?)
-        <Headline>{t('hello')}</Headline> 
-    </View>
-	}	
+ 
+	const  CustomAppBar = (props) => {
+		return (	
+			<Appbar.Header>
+				{props.back ? 
+						<Appbar.BackAction  onPress={props.navigation.goBack}/> : null}
+						
+		        //use i18n.t(key, options?)
+				<Appbar.Content  title={i18n.t("books")}  />
+				
+			</Appbar.Header>
+		);
+	}
+
+	
 
 
