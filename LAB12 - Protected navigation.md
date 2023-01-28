@@ -1,4 +1,4 @@
-# LAB 11: Custom hooks
+# LAB 12: Protected navigation
 For this lab, we will create a custom hook `useIsAuthenticated`, which provides a boolean indicating whether the user is logged in or not.
 
 
