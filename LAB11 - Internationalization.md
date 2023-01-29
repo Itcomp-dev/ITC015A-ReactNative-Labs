@@ -1,8 +1,5 @@
 # LAB 11: Internationalization
 
-Hi! I'm your first Markdown file in **StackEdit**. If you want to learn about StackEdit, you can read me. If you want to play with Markdown, you can edit me. Once you have finished with me, you can create new files by opening the **file explorer** on the left corner of the navigation bar.
-
-
 # Install requirements
 
 Run the following command to install **i18n-js** and **react-native-localize**
