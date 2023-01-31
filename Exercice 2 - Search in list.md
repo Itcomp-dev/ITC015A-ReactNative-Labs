@@ -5,7 +5,7 @@ The purpose of this exercise, is to add a search bar to the UI, pass the query (
 ## Tasks
 Try to reproduce the following UI, this preview shows how the it's supposed to look:
 
-![Preview](_res/exercice2.jpeg)
+![Preview](_res/exercice2.jpg)
 
 
 ## Guide
