@@ -1,8 +1,36 @@
-# LAB 12: Protected navigation
-For this lab, we will create a custom hook `useIsAuthenticated`, which provides a boolean indicating whether the user is logged in or not.
+# Exercice 3 : Authentication screen
+
+The purpose of this exercise is to build a feature from end to end (UI, Form, Store, API Call), thus you'll build a login screen.
 
 
-## Implement the hook function
+## Preview
+
+The following preview shows the final result:
+
+![Preview](_res/exercice3.jpeg)
+
+## Guide
+Here is some considerations to respect when building the login feature:
+
+ - Name of the screen component: **Login**
+ - The login form must have 2 fields: **email** and **password**
+ - Add a new slice to the store named '**auth**', which has the following properties:
+	 - `accessToken` : The access token
+	 - `expiresIn` : The access token expiration date time
+	 - `userInfo` : User profile informations : {isAuthenticated, firstName, lastName, email}
+- Create the necessary actions and selectors.
+- Add a new datasource **auth.datasource** which will have 2 function **login** and **register** (Refer to the [BooksAPI Doc](/s/wuVfz5hOM65j9pGYkNXk/resources/booksapi-documentation))
+- For safe navigation, don't add the login screen to the app navigator, create a new separate stack navigator called **AuthNavigator.** (See next section)
+
+**Note:** Use this email: **demo@rn.com** and the password **Demo@123** for testing login
+
+
+
+## Protected Navigation
+In this section, we will create a custom hook `useIsAuthenticated`, which provides a boolean indicating whether the user is logged in or not.
+
+
+### Implement the hook function
 
 1. Create a folder `hooks` inside the folder `src`
 2. Create a new file `useIsAuthenticated.js` inside that folder
@@ -34,7 +62,7 @@ For this lab, we will create a custom hook `useIsAuthenticated`, which provides 
 		}
 
 
-##  Update the entry component `App.js` 
+###  Update the entry component `App.js` 
 
 Finally, we just need to use the correct navigator, according to authentication data:
 1. Go to `App.js` and add another component outside the app component which checks the authentication using the hook we created:
@@ -57,4 +85,3 @@ Finally, we just need to use the correct navigator, according to authentication 
 		  );
 		};
 
- 
