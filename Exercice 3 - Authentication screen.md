@@ -7,7 +7,7 @@ The purpose of this exercise is to build a feature from end to end (UI, Form, St
 
 The following preview shows the final result:
 
-![Preview](_res/exercice3.jpeg)
+![Preview](_res/exercice3.jpg)
 
 ## Guide
 Here is some considerations to respect when building the login feature:
@@ -19,7 +19,7 @@ Here is some considerations to respect when building the login feature:
 	 - `expiresIn` : The access token expiration date time
 	 - `userInfo` : User profile informations : {isAuthenticated, firstName, lastName, email}
 - Create the necessary actions and selectors.
-- Add a new datasource **auth.datasource** which will have 2 function **login** and **register** (Refer to the [BooksAPI Doc](/s/wuVfz5hOM65j9pGYkNXk/resources/booksapi-documentation))
+- Add a new datasource **auth.datasource** which will have 2 function **login** and **register** (Refer to the [BooksAPI Doc](https://books-app-rn.azurewebsites.net/index.html))
 - For safe navigation, don't add the login screen to the app navigator, create a new separate stack navigator called **AuthNavigator.** (See next section)
 
 **Note:** Use this email: **demo@rn.com** and the password **Demo@123** for testing login
