@@ -1,6 +1,6 @@
 # Lab 3: State and Props
 
-
+A React (Native) component can manage two types of data : State and Props, in this lab you'll get to use and manage a state using React Hooks such as useState and useEffect, also pass data from a parent to a child component using Props.
 
 
 ## useState hook
