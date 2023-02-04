@@ -1,5 +1,6 @@
 # Lab 5: Using theme
 
+In this lab, you'll learn how to use themes and provide them into your app components tree, you will also get to discover what is a HOC (Higher Order Component)
 
 
 ## React Native Paper Theme
