@@ -1,5 +1,6 @@
 # Lab 1: Getting Started
 
+This first lab wil introduce you to React Native development environment and tools and get you familiar with debugging tools.
 
 
 
