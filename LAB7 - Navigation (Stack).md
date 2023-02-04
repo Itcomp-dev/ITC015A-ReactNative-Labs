@@ -1,5 +1,6 @@
 # Lab 7: Navigation (Stack)
 
+This lab shows how to setup a stack navigator using @react-navigation/stack library 
 
 
 ## Install requirements
