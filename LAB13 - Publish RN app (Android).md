@@ -1,5 +1,6 @@
 # LAB 13 : Publish React Native app (Android)
 
+This lab demonstrates step by step the necessary changes and settings to be made within Android code source of a React Native app before publishing it into Google Play Console.
 
 
 
