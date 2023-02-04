@@ -1,5 +1,6 @@
 # Lab 6: Navigation (Tabs)
 
+This lab will cover the necessary steps to setup navigation into a React Native app using React Navigation library, first you'll set up a Tab navigator.
 
 
 ## Install requirements
