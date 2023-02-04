@@ -1,5 +1,6 @@
 # Lab 4: Build an style UI
 
+The purpose of this lab is to instegrate a third-party UI library and use its components to compose a fully functional user interface.
 
 
 ## Fake data
