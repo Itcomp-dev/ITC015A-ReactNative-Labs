@@ -1,6 +1,6 @@
 # LAB 9: Make API Calls
 
-
+Almost every mobile application needs to be consume data from a server whether for authenticating users or showing content,...etc. In this lab we'll learn how to use Axios HTTP client to make network requests.
 
 
 ## Install requirements
