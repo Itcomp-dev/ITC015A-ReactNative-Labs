@@ -1,6 +1,6 @@
 # LAB8: Redux Toolkit
 
-
+This lab will cover the Redux architecture and how to integrate Redux Toolkit into your project to implement Redux archiecture along with organizing your project's files and folder to obtain a scalable and maintenable codebase
 
 
 ## Setup the project
