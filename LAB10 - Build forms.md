@@ -1,6 +1,6 @@
 # LAB 10: Build forms
 
-
+Forms are a fundamental part of every user experience, in this lab will show how to use one of the most common libraries used to creat ana manage forms which is Formik, along with validating data from users with Yup validators. 
 
 ## Install requirements
 Run the following command to install `Formik` and `Yup` validators
