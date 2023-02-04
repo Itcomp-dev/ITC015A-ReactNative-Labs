@@ -1,5 +1,7 @@
 # LAB 11: Internationalization
 
+Making a product available and adapting it for different markets with different cultures and languages is important, this process is called internationalization and to acheive it in mobile application built in React Native we need to use i18n-js library.
+
 # Install requirements
 
 Run the following command to install **i18n-js** and **react-native-localize**
