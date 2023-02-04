@@ -1,6 +1,6 @@
 # LAB 12: Use Typescript
 
-
+By default, React Native uses Javascript as the official language support, in this lab we'll switch to Typescript for better type checking and code maintenability.
 
 # Install requirements
 
