@@ -1,5 +1,6 @@
 # Lab 2: Using Components
 
+In this lab, you will learn how to use JSX synxtax to create your first component in React Native
 
 
 
